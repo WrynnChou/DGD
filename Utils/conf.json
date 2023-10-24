@@ -1,0 +1,10 @@
+
+{
+
+  "subsampling_number": 400,
+
+  "method": "LogisticRegression",
+
+  "Explained_variance_ratio_threshold": 2
+
+}

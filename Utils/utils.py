@@ -1,5 +1,6 @@
 import numpy as np
 import gc
+import math
 import pyunidoe as uni
 from math import gcd as bltin_gcd
 from scipy.special import comb, perm
@@ -92,3 +93,32 @@ def uni_count(point: np.ndarray):
                 count.append(1)
 
     return np.array(point_uni), np.array(count)
+
+def eval(y_predict, y_ture, pit = True):
+    """
+    Eval the percentage of y == yp
+    """
+    d1 = y_predict.shape[0]
+    d2 = y_ture.shape[0]
+    assert d1 == d2, "the numbers of two ys don`t match. Please check the number."
+    acc = (y_ture == y_predict).sum() / len(y_predict)
+    if pit == True:
+        print("The accuracy is %.2f%%." % (acc * 100))
+    return np.around((acc * 100), 2)
+
+def logit(x):
+    """
+    Logit function
+    """
+    ones = np.ones_like(x)
+    y = ones / (ones + math.e ** x)
+    return y
+
+def classify(y):
+    """
+    if y > 0.5, then return 1, else 0.
+    r is the bool mask.
+    """
+    r = y > 0.5
+    result = r.astype('int')
+    return result, r
