@@ -1,6 +1,7 @@
 import numpy as np
 import gc
 import math
+import torch
 import pyunidoe as uni
 from math import gcd as bltin_gcd
 from scipy.special import comb, perm
@@ -122,3 +123,48 @@ def classify(y):
     r = y > 0.5
     result = r.astype('int')
     return result, r
+
+
+def IECDF_1D(sample):
+    '''
+    Given the inverse empirical calculated density function of 1 dimension sample
+    :param sample: samples
+    :return: IECDF function (or PPF)
+    '''
+
+    def iecdf(x):
+        x = torch.as_tensor(x)
+        index = torch.zeros_like(x)
+        fix = x == 1
+        n = len(sample)
+        sort = sorted(sample)
+        index[~fix] = torch.floor(torch.tensor(n) * x[~fix])
+        index[fix] = -1 * torch.ones_like(x)[fix]
+        result = np.array(sort)[index.type(torch.int)]
+        return result
+
+    return iecdf
+
+
+def IECDF_nD(sample):
+    """
+    n-dimension IECDF
+    :param sample:
+    :return:
+    """
+    n = sample.shape[0]
+    dim = sample.shape[1]
+    func = list()
+    for i in range(dim):
+        f = IECDF_1D(sample[:, i])
+        func.append(f)
+
+    def iecdf_nd(x):
+        result = np.zeros(x.shape)
+        dim2 = x.shape[1]
+        assert dim == dim2
+        for i in range(dim2):
+            result[:, i] = (func[i](x[:, i]))
+        return result
+
+    return iecdf_nd, func

@@ -1,7 +1,7 @@
 
 {
 
-  "subsampling_number": 400,
+  "subsampling_number": 50,
 
   "method": "LogisticRegression",
 

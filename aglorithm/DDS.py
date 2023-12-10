@@ -38,7 +38,7 @@ class Dds(object):
         self.n_components = pca.n_components_
         self.pc = pc
 
-    def sampling(self, ud, block = 5):
+    def sampling(self, ud, block=5):
 
         prin = self.pc
         dim = self.n_components
@@ -53,7 +53,7 @@ class Dds(object):
         self.subsampling = sampling
         self.subsampling_y = sampling_label
 
-        return sampling, sampling_label
+        return sampling, sampling_label, sub_idx
 
     def IECDF_1D(self, sample):
         '''
@@ -217,3 +217,38 @@ class Dds(object):
         self.subsampling_y = subsampling_label
 
         return subsampling, subsampling_label
+
+    def seqential_sampling(self, threshold=0, block=2):
+
+        dim = self.n_components
+        n = self.n
+        prin = self.pc
+        data = self.data
+        label = self.label
+        num = self.num
+
+        seqSampling = []
+        seqSampling_label = []
+
+        while prin.shape[0] > n and prin.shape[0] > threshold * num:
+            ud = uts.glp(n, dim)
+            iecdf, funcs = self.IECDF_nD(prin)
+            sub_prin, sub_idx = self.nus_nnbrs(prin, iecdf, funcs, ud, block)
+            sampling = data[sub_idx, :]
+            sampling_label = label[sub_idx]
+
+            seqSampling.append(sampling)
+            seqSampling_label.append(sampling_label)
+
+            sub_mask = np.ones(data.shape[0]).astype('bool')
+            sub_mask[sub_idx] = 0
+            prin = prin[sub_mask, :]
+            data = data[sub_mask, :]
+            label = label[sub_mask]
+
+        if prin.all():
+            seqSampling.append(data)
+            seqSampling_label.append(label)
+
+        return seqSampling, seqSampling_label
+
