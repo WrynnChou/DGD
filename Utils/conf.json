@@ -1,10 +1,16 @@
 
 {
 
-  "subsampling_number": 50,
+  "subsampling_number": 256,
+
+  "batch": 256,
 
   "method": "LogisticRegression",
 
-  "Explained_variance_ratio_threshold": 2
+  "Explained_variance_ratio_threshold": 0.85,
+
+  "epoch": 10,
+
+  "learning_rate": 0.01
 
 }

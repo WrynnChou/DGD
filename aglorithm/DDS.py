@@ -36,6 +36,7 @@ class Dds(object):
         pca = PCA(n_components=self.Explained_variance_ratio_threshold)
         pc = pca.fit_transform(self.data)
         self.n_components = pca.n_components_
+        self.pca = pca
         self.pc = pc
 
     def sampling(self, ud, block=5):
@@ -229,9 +230,10 @@ class Dds(object):
 
         seqSampling = []
         seqSampling_label = []
+        ud = uts.glp(n, dim)
 
         while prin.shape[0] > n and prin.shape[0] > threshold * num:
-            ud = uts.glp(n, dim)
+
             iecdf, funcs = self.IECDF_nD(prin)
             sub_prin, sub_idx = self.nus_nnbrs(prin, iecdf, funcs, ud, block)
             sampling = data[sub_idx, :]

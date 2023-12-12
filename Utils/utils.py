@@ -49,8 +49,8 @@ def glp(n, p, type='CD2'):
             H_ = np.array(H)
             H_ = H_[sample(range(len(H)), 3000)]
             H = list(H_)
-        design0 = np.ones((n, p))
-        d0 = uni.design_eval(design0, type)
+        design0 = np.zeros((n, p))
+        d0 = float('inf')
         for t in range(len(H)):
             design = np.zeros((n, p))
             for i in range(p):
@@ -61,7 +61,6 @@ def glp(n, p, type='CD2'):
                 d0 = d1
                 design0 = design
         design0 = (design0 * 2 - 1) / (2 * n)
-        gc.collect()
 
     return design0
 

@@ -11,3 +11,8 @@ class LR(torch.nn.Module):
         x = self.sigmoid(x)
 
         return x
+
+class MLP(torch.nn.Module):
+
+    def __init__(self):
+        super(MLP, self).__init__()
